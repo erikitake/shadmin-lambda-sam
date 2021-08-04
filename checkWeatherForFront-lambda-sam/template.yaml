@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  checkWeatherForFrontfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: checkWeatherForFront.lambda_handler
+      Runtime: python3.8
+      CodeUri: checkWeatherForFront
+      Description: ''
+      MemorySize: 128
+      Timeout: 10
+      Role: '{{resolve:ssm:execLambdaArn:1}}' 
+      Environment:
+        Variables:
+          APIKEY: !Ref APIKEY
+          BASEURL: !Ref BASEURL
+          PARAM: !Ref PARAM
+Parameters:
+  APIKEY:
+    Type: String
+  BASEURL:
+    Type: String
+  PARAM:
+    Type: String

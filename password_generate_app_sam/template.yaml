@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  pwappfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: pwapp_lambda.lambda_handler
+      Runtime: python3.8
+      CodeUri: pwapp_lambda
+      Description: ''
+      MemorySize: 128
+      Timeout: 10
+      Role: '{{resolve:ssm:execLambdaArn:1}}' 
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /pwapp
+            Method: GET

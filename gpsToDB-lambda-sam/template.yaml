@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  gpsToDBfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: gpsToDB.lambda_handler
+      Runtime: python3.8
+      CodeUri: gpsToDB
+      Description: ''
+      MemorySize: 128
+      Timeout: 10
+      Role: '{{resolve:ssm:execLambdaArn:1}}' 
+      Environment:
+        Variables:
+          db_connect: !Ref dbconnect
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:sg_id:1}}' 
+        SubnetIds:
+          - '{{resolve:ssm:subnet_id:1}}' 
+Parameters:
+  dbconnect:
+    Type: String
