@@ -21,7 +21,8 @@ def lambda_handler(event, context):
     uvi = event['uvi']
     wind_speed = event['wind_speed']
     wind_deg = event['wind_deg']
-    wind_gust = event['wind_gust']
+    if('wind_gust' in event):
+        wind_gust = event['wind_gust']
     weather = event['weather']
 
     #connect
@@ -33,11 +34,19 @@ def lambda_handler(event, context):
     #Open a cursor to perform database operations
     cur = conn.cursor()
 
-    sqlstring = "INSERT INTO weathers ( \
-        temp, humidity, time, feels_like, pressure, dew_point, uvi, wind_speed, wind_deg, wind_gust, weather, created_at, created_by, updated_at, updated_by) \
+    if('wind_gust' in event):
+        sqlstring = "INSERT INTO weathers ( \
+            temp, humidity, time, feels_like, pressure, dew_point, uvi, wind_speed, wind_deg, wind_gust, weather, created_at, created_by, updated_at, updated_by) \
+            values ('" + str(temp) + "', '" + str(humidity) + "', '" + str(time) + "', '" + str(feels_like) + "', '" + str(pressure) + "', '" + str(dew_point) + \
+            "', '" + str(uvi) + "', '" + str(wind_speed) + "', '" + str(wind_deg) + "', '" + str(wind_gust) + "', '" + str(weather) + \
+            "', CURRENT_TIMESTAMP, 'OpenWeather', CURRENT_TIMESTAMP, 'OpenWeather');" 
+    elif('wind_gust' not in event):
+            sqlstring = "INSERT INTO weathers ( \
+        temp, humidity, time, feels_like, pressure, dew_point, uvi, wind_speed, wind_deg, weather, created_at, created_by, updated_at, updated_by) \
         values ('" + str(temp) + "', '" + str(humidity) + "', '" + str(time) + "', '" + str(feels_like) + "', '" + str(pressure) + "', '" + str(dew_point) + \
-        "', '" + str(uvi) + "', '" + str(wind_speed) + "', '" + str(wind_deg) + "', '" + str(wind_gust) + "', '" + str(weather) + \
+        "', '" + str(uvi) + "', '" + str(wind_speed) + "', '" + str(wind_deg) + "', '"  + str(weather) + \
         "', CURRENT_TIMESTAMP, 'OpenWeather', CURRENT_TIMESTAMP, 'OpenWeather');" 
+
     logger.info('sqlstring: %s', sqlstring)
     cur.execute(sqlstring)
     
