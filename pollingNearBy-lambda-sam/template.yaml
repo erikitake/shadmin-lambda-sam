@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  pollingNearByfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: pollingNearBy.lambda_handler
+      Runtime: python3.8
+      CodeUri: pollingNearBy
+      Description: ''
+      MemorySize: 128
+      Timeout: 10
+      Role: '{{resolve:ssm:execLambdaArn:1}}' 
+      Environment:
+        Variables:
+          db_connect: !Ref dbconnect
+          luLati: !Ref luLati
+          luLong: !Ref luLong
+          loLati: !Ref loLati
+          loLong: !Ref loLong
+          roLati: !Ref roLati
+          roLong: !Ref roLong
+          ruLati: !Ref ruLati
+          ruLong: !Ref ruLong
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:sg_id:1}}' 
+        SubnetIds:
+          - '{{resolve:ssm:subnet_id:1}}' 
+Parameters:
+  dbconnect:
+    Type: String
+  luLati:
+    Type: Number
+  luLong:
+    Type: Number
+  loLati:
+    Type: Number
+  loLong:
+    Type: Number
+  roLati:
+    Type: Number
+  roLong:
+    Type: Number
+  ruLati:
+    Type: Number
+  ruLong:
+    Type: Number
