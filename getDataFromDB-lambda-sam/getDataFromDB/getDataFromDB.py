@@ -51,7 +51,7 @@ def lambda_handler(event, context):
             else:           
                 sqlstring = sqlstring + " or updated_by = '" + str(elem) + "'"
         sqlstring = sqlstring + ") order by updated_at desc;"
-    if ident == "weather":
+    if ident == "weather" or ident == "pressure":
         sqlstring = "select temp, humidity, pressure, timezone('JST', updated_at::timestamptz) as updated_at from " \
           + str(tableName) + " where updated_at between timezone('JST', '" + str(fromDate) + "'::timestamp) and timezone('JST', '" + str(toDate) + "'::timestamp);" 
  
@@ -73,7 +73,7 @@ def lambda_handler(event, context):
         for index, row in enumerate(rows):
             addDict = {"updated_by": str(row[3]), "latitude": str(row[1]), "longitude": str(row[2]), "time": str(row[0])}
             jsonobj[str(tableName)].append(addDict)
-    if ident == "weather":
+    if ident == "weather" or ident == "pressure":
         for index, row in enumerate(rows):
             addDict = {"temp": str(row[0]), "humidity": str(row[1]), "pressure": str(row[2]), "datetime": str(row[3])}
             jsonobj[str(tableName)].append(addDict)
