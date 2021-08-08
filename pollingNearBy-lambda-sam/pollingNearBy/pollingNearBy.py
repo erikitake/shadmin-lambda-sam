@@ -23,7 +23,34 @@ def lambda_handler(event, context):
     #Open a cursor to perform database operations
     cur = conn.cursor()
 
-    sqlstring = "select * from locations order by updated_at desc limit 1;" 
+    sqlstring = "select updated_by from locations group by updated_by;"
+    logger.info('sqlstring: %s', sqlstring)
+    cur.execute(sqlstring)
+    rows = cur.fetchall()
+    logger.info('rows: %s', rows)
+    for index, item in enumerate(rows):
+        execProcess(event, context, item[0])
+
+    #Make the changes to the database persistent
+    conn.commit()
+    # Close communication with the database
+    cur.close()
+    conn.close()
+    logger.info('conn close.')
+
+    return
+    
+def execProcess(event, context, item):
+    #connect
+    db_connect = os.getenv('db_connect')
+    logger.info('json db_connect %s', db_connect)
+
+    conn = psycopg2.connect(db_connect)
+    logger.info('connected')
+    #Open a cursor to perform database operations
+    cur = conn.cursor()
+
+    sqlstring = "select * from locations where updated_by='" + item + "' order by updated_at desc limit 1;" 
     logger.info('sqlstring: %s', sqlstring)
     cur.execute(sqlstring)
     row = cur.fetchone()
@@ -48,16 +75,16 @@ def lambda_handler(event, context):
         (float(checkRange[6]),float(checkRange[7]))
     ]])
 
+    inOut=""
     if boolean_point_in_polygon(point, polygon):
-        print('領域内')
+        inOut="in"
     else:
-        print('領域外')
+        inOut="out"
 
-
-    # sqlstring = "INSERT INTO locations (lid, location_status, created_at, created_by, updated_at, updated_by) values ('" \
-    #  + str(row) + "', '" + str(locationStatus) + "', CURRENT_TIMESTAMP, '" + str(PHONE_NAME) + "', CURRENT_TIMESTAMP, '" + str(PHONE_NAME) + "');" 
-    # logger.info('sqlstring: %s', sqlstring)
-    # cur.execute(sqlstring)
+    sqlstring = "INSERT INTO location_status (lid, location_status, created_at, created_by, updated_at, updated_by) values ('" \
+     + str(row[0]) + "', '" + str(inOut) + "', CURRENT_TIMESTAMP, '" + str(item) + "', CURRENT_TIMESTAMP, '" + str(item) + "');" 
+    logger.info('sqlstring: %s', sqlstring)
+    cur.execute(sqlstring)
 
     #Make the changes to the database persistent
     conn.commit()
@@ -65,5 +92,3 @@ def lambda_handler(event, context):
     cur.close()
     conn.close()
     logger.info('conn close.')
-        
-    return
