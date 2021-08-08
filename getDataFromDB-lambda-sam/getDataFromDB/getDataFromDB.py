@@ -41,6 +41,16 @@ def lambda_handler(event, context):
             else:           
                 sqlstring = sqlstring + " or updated_by = '" + str(elem) + "'"
         sqlstring = sqlstring + ") order by updated_at desc limit 2;"
+    if ident == "gpsHist":
+        targetNameArray = targetName.split(":")
+        sqlstring = "select timezone('JST', time::timestamptz) as time, latitude, longitude, updated_by from " \
+          + str(tableName) + " where " 
+        for index, elem in enumerate(targetNameArray):
+            if index == 0:
+                sqlstring = sqlstring + " ( updated_by = '" + str(elem) + "'"
+            else:           
+                sqlstring = sqlstring + " or updated_by = '" + str(elem) + "'"
+        sqlstring = sqlstring + ") order by updated_at desc;"
     if ident == "weather":
         sqlstring = "select temp, humidity, pressure, timezone('JST', updated_at::timestamptz) as updated_at from " \
           + str(tableName) + " where updated_at between timezone('JST', '" + str(fromDate) + "'::timestamp) and timezone('JST', '" + str(toDate) + "'::timestamp);" 
@@ -56,6 +66,10 @@ def lambda_handler(event, context):
             addDict = {"degree": str(row[0]), "datetime": str(row[1])}
             jsonobj[str(tableName)].append(addDict)
     if ident == "gps":
+        for index, row in enumerate(rows):
+            addDict = {"updated_by": str(row[3]), "latitude": str(row[1]), "longitude": str(row[2]), "time": str(row[0])}
+            jsonobj[str(tableName)].append(addDict)
+    if ident == "gpsHist":
         for index, row in enumerate(rows):
             addDict = {"updated_by": str(row[3]), "latitude": str(row[1]), "longitude": str(row[2]), "time": str(row[0])}
             jsonobj[str(tableName)].append(addDict)
