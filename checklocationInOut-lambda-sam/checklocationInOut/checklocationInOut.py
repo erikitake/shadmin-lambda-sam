@@ -57,9 +57,9 @@ def execProcess(locationAt, item):
     
     if rows[0][3] == rows[1][3]:
         if rows[0][2] == rows[1][2]:
-            logger.info("no change")       
+            print("no change")
         if rows[0][2] != rows[1][2]:
-            logger.info('%s -> %s', rows[1][2],rows[0][2])
+            print(rows[1][2] + " -> " + rows[0][2])
             if(rows[1][2] == 'in' and rows[0][2] == 'out' and locationAt == 'ikebukuro'):
                 execNotification(locationAt, item, 'は帰ってます！！！', 1) 
             if(rows[1][2] == 'out' and rows[0][2] == 'in' and locationAt == 'ikebukuro'):
