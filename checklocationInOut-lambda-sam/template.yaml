@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  checklocationInOutfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: checklocationInOut.lambda_handler
+      Runtime: python3.8
+      CodeUri: checklocationInOut
+      Description: ''
+      MemorySize: 128
+      Timeout: 10
+      Role: '{{resolve:ssm:execLambdaArn:1}}' 
+      Environment:
+        Variables:
+          db_connect: !Ref dbconnect
+          locationAtAll: !Ref locationAtAll      
+          lineTokenMain: !Ref lineTokenMain      
+          lineTokenPriv: !Ref lineTokenPriv      
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:sg_id:1}}' 
+        SubnetIds:
+          - '{{resolve:ssm:subnet_id:1}}' 
+Parameters:
+  dbconnect:
+    Type: String
+  locationAtAll:
+    Type: String
+  lineTokenMain:
+    Type: String
+  lineTokenPriv:
+    Type: String
