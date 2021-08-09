@@ -15,6 +15,7 @@ Resources:
       Environment:
         Variables:
           db_connect: !Ref dbconnect
+          locationAt: !Ref locationAt
           luLati: !Ref luLati
           luLong: !Ref luLong
           loLati: !Ref loLati
@@ -30,6 +31,8 @@ Resources:
           - '{{resolve:ssm:subnet_id:1}}' 
 Parameters:
   dbconnect:
+    Type: String
+  locationAt:
     Type: String
   luLati:
     Type: Number
