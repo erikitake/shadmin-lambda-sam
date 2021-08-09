@@ -31,13 +31,15 @@ def lambda_handler(event, context):
     logger.info('rows: %s', rows)
 
     # 更新している対象＞指定する場所でループして、直近2rowsでinoutに違いがあれば通知
-    execNotification = []
+    execNotification = {}
+    n = 0
     for i, item in enumerate(rows):
         for j, locationAt in enumerate(locationAtAll):
             print("start : ", str(item), "locale : ", str(locationAt))
             arreyStr = execProcess(locationAt, item[0])
             if len(arreyStr)!=0 :
-                execNotification.append(arreyStr)
+                execNotification["key"+str(n)] = arreyStr
+                n = n + 1
 
     # Close communication with the database
     cur.close()
@@ -58,20 +60,20 @@ def execProcess(locationAt, item):
     rows = cur.fetchall()
     logger.info('rows: %s', rows)
     
-    execNotification = []
+    execNotification = ""
     if rows[0][3] == rows[1][3]:
         if rows[0][2] == rows[1][2]:
             print("no change")
         if rows[0][2] != rows[1][2]:
             print(rows[1][2] + " -> " + rows[0][2])
             if(rows[1][2] == 'in' and rows[0][2] == 'out' and locationAt == 'ikebukuro'):
-                execNotification.extend([locationAt, item, 'は帰ってます！！！', 1])
+                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'は帰ってます！！！', "flg": 0}
             if(rows[1][2] == 'out' and rows[0][2] == 'in' and locationAt == 'ikebukuro'):
-                execNotification.extend([locationAt, item, 'reached at office', 0]) 
+                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'reached at office', "flg": 0} 
             if(rows[1][2] == 'in' and rows[0][2] == 'out' and locationAt == 'home'):
-                execNotification.extend([locationAt, item, 'went out at home', 0]) 
+                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'went out at home', "flg": 0}
             if(rows[1][2] == 'out' and rows[0][2] == 'in' and locationAt == 'home'):
-                execNotification.extend([locationAt, item, 'reached at home', 0]) 
+                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'reached at home', "flg": 0} 
 
     print("execNotification: ", execNotification)
     
