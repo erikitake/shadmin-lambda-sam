@@ -15,6 +15,7 @@ Resources:
       Environment:
         Variables:
           db_connect: !Ref dbconnect
+          users: !Ref users      
       VpcConfig:
         SecurityGroupIds:
           - '{{resolve:ssm:sg_id:1}}' 
@@ -22,4 +23,6 @@ Resources:
           - '{{resolve:ssm:subnet_id:1}}' 
 Parameters:
   dbconnect:
+    Type: String
+  users:
     Type: String
