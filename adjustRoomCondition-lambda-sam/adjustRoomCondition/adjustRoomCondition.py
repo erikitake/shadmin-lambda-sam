@@ -61,7 +61,7 @@ def lambda_handler(event, context):
     print("r :", r.json())
 
     # notify private line
-    honbunStr = roomName + "の今の部屋の温度が" + degree + "度だから、" + opmode + " " + avol + " " + adjustDegree + "度 にエアコンを設定しました"
+    honbunStr = roomName + "の今の部屋の温度が" + str(degree) + "度だから、" + str(opmode) + " " + str(avol) + " " + str(adjustDegree) + "度 にエアコンを設定しました"
     mainStr = {"key0": {"flg": 0, "mainStr": honbunStr}}
 
     return mainStr
