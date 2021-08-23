@@ -1,5 +1,11 @@
 {
   "roomName": "nr",
   "checkDegree": "temperatures",
-  "user" : "Rickeysaaan"
+  "users": "Rickeysaaan:Aya",
+  "summerMonth": "6",
+  "winterMonth": "10",
+  "summerDegreeTargetHigh": "27",
+  "summerDegreeTargetLow": "25",
+  "winterDegreeTargetHigh": "22",
+  "winterDegreeTargetLow": "18"
 }

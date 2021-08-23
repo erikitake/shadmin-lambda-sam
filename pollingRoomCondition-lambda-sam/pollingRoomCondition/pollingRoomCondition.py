@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     dt_now = datetime.now()
     nowMonth = dt_now.strftime('%m')
 
-    users = os.getenv('users')
+    users= event['users']
     users = users.split(":")
     print("users : ", users)
     userStr = ""
@@ -56,21 +56,29 @@ def lambda_handler(event, context):
 
     # 夏と冬で場合分け、快適な温度以外だったらjsonを作成
     returnStr = {"season" : "", "status" : "", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
-    if (int(nowMonth) >= 6 and int(nowMonth) <= 10):
-        if (degree > 28):
+
+    summerMonth = event['summerMonth'] #6
+    winterMonth = event['winterMonth'] #10
+    summerDegreeTargetHigh = event['summerDegreeTargetHigh'] #28
+    summerDegreeTargetLow = event['summerDegreeTargetLow']   #25
+    winterDegreeTargetHigh = event['winterDegreeTargetHigh'] #22
+    winterDegreeTargetLow = event['winterDegreeTargetLow']   #18
+    
+    if (int(nowMonth) >= int(summerMonth) and int(nowMonth) <= int(winterMonth)):
+        if (degree > int(summerDegreeTargetHigh)):
             returnStr = {"season" : "summer", "status" : "hot", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
             print("暑い")
-        elif (degree < 25):
+        elif (degree < int(summerDegreeTargetLow)):
             returnStr = {"season" : "summer", "status" : "cold", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
             print("寒い")
         else:
             print("快適")
 
-    if (int(nowMonth) >= 11 and int(nowMonth) <= 5):
-        if (degree > 22):
+    if (int(nowMonth) >= (int(winterMonth)+1) and int(nowMonth) <= (int(summerMonth)-1) ):
+        if (degree > int(winterDegreeTargetHigh)):
             returnStr = {"season" : "winter", "status" : "hot", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
             print("暑い")
-        elif (degree < 18):
+        elif (degree < int(winterDegreeTargetLow)):
             returnStr = {"season" : "winter", "status" : "cold", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
             print("寒い")
         else:

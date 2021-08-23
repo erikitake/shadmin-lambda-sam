@@ -19,15 +19,15 @@ def lambda_handler(event, context):
     user = ""
     if ('user' in event[a]):
       user = event[a]['user']
-    mainStr = ""
-    if ('mainStr' in event[a]):
-      msgStr = event[a]['mainStr']
+    msg = ""
+    if ('msg' in event[a]):
+      msgStr = event[a]['msg']
     flg = "" 
     if ('flg' in event[a]):
       flg = event[a]['flg']
 
     # ライン通知(flgが0ならプライベート通知、それ以外ならメインの通知先)
-    if flg == 0:
+    if int(flg) == 0:
         line_notify_token = os.getenv('lineTokenPriv')
     else:
         line_notify_token = os.getenv('lineTokenMain')

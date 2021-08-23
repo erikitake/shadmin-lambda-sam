@@ -67,13 +67,13 @@ def execProcess(locationAt, item):
         if rows[0][2] != rows[1][2]:
             print(rows[1][2] + " -> " + rows[0][2])
             if(rows[1][2] == 'in' and rows[0][2] == 'out' and locationAt == 'ikebukuro'):
-                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'は帰ってます！！！', "flg": 0}
+                execNotification = {"locationAt": locationAt, "user": item, "msg": 'は帰ってます！！！', "flg": 0}
             if(rows[1][2] == 'out' and rows[0][2] == 'in' and locationAt == 'ikebukuro'):
-                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'reached at office', "flg": 0} 
+                execNotification = {"locationAt": locationAt, "user": item, "msg": 'reached at office', "flg": 0} 
             if(rows[1][2] == 'in' and rows[0][2] == 'out' and locationAt == 'home'):
-                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'went out at home', "flg": 0}
+                execNotification = {"locationAt": locationAt, "user": item, "msg": 'went out at home', "flg": 0}
             if(rows[1][2] == 'out' and rows[0][2] == 'in' and locationAt == 'home'):
-                execNotification = {"locationAt": locationAt, "user": item, "mainStr": 'reached at home', "flg": 0} 
+                execNotification = {"locationAt": locationAt, "user": item, "msg": 'reached at home', "flg": 0} 
 
     print("execNotification: ", execNotification)
     
