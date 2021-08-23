@@ -21,7 +21,7 @@ def lambda_handler(event, context):
       user = event[a]['user']
     msg = ""
     if ('msg' in event[a]):
-      msgStr = event[a]['msg']
+      msg = event[a]['msg']
     flg = "" 
     if ('flg' in event[a]):
       flg = event[a]['flg']
@@ -32,10 +32,10 @@ def lambda_handler(event, context):
     else:
         line_notify_token = os.getenv('lineTokenMain')
     if user != "" :
-      msgStr = user + " " + msgStr 
+      msg = user + " " + msg 
     line_notify_api = 'https://notify-api.line.me/api/notify'
     headers = {'Authorization': f'Bearer {line_notify_token}'}
-    data = {'message': f'message: {msgStr}'}
+    data = {'message': f'message: {msg}'}
     requests.post(line_notify_api, headers = headers, data = data)
     print("LINEに送信しました")
 

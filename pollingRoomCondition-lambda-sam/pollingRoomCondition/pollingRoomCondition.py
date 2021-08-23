@@ -26,7 +26,12 @@ def lambda_handler(event, context):
     users= event['users']
     users = users.split(":")
     print("users : ", users)
-    userStr = ""
+
+    # 後続の処理でseasonで判断している処理があるので初期値で残している
+    returnStr = {"season" : ""}
+
+    countExitHome = 0
+    indexUsers = 0
     for index, user in enumerate(users):
         # 家にいるときのみ実行
         sqlstring = "select location_status from location_status where updated_by = '"+ user +"' and location_at = 'home' order by updated_at desc limit 1;"
@@ -36,9 +41,12 @@ def lambda_handler(event, context):
         logger.info('row: %s', row)
         if row[0] == 'out':
             print("外出中")
-            return
+            countExitHome = countExitHome + 1
         else:
             print(user, "さんは家にいる")
+        indexUsers = indexUsers + 1
+    if countExitHome == indexUsers:
+        return returnStr
 
     # 部屋の気温をDBから取得
     sqlstring = "select degree from " + checkDegree + " where updated_by='" + roomName + "' order by updated_at desc limit 1;"
@@ -55,8 +63,6 @@ def lambda_handler(event, context):
     print("Month : ", nowMonth)
 
     # 夏と冬で場合分け、快適な温度以外だったらjsonを作成
-    returnStr = {"season" : "", "status" : "", "roomName" : roomName, "checkDegree" : checkDegree, "degree" : degree}
-
     summerMonth = event['summerMonth'] #6
     winterMonth = event['winterMonth'] #10
     summerDegreeTargetHigh = event['summerDegreeTargetHigh'] #28
